@@ -19,7 +19,7 @@ export default function BreedCard({ id, name, image, temperament }: BreedCardPro
   }, [id]);
 
   const toggleFavorite = (e: React.MouseEvent) => {
-    e.preventDefault(); // avoid page navigation
+    e.preventDefault();
     const stored = JSON.parse(localStorage.getItem("favorites") || "[]");
     let updated;
     if (stored.includes(id)) {
@@ -36,19 +36,7 @@ export default function BreedCard({ id, name, image, temperament }: BreedCardPro
 
   return (
     <Link href={`/breeds/${id}`}>
-      <div className="relative bg-white/70 backdrop-blur-lg rounded-2xl shadow-lg hover:shadow-2xl transition-all p-4 border border-white/40">
-        {/* Favorite Heart */}
-        <button
-          onClick={toggleFavorite}
-          className="absolute top-3 right-3 bg-white/80 rounded-full p-2 hover:scale-110 transition-transform shadow-sm"
-        >
-          <Heart
-            className={`w-5 h-5 ${
-              isFavorite ? "fill-red-500 text-red-500" : "text-gray-400"
-            }`}
-          />
-        </button>
-
+      <div className="bg-white/70 backdrop-blur-lg rounded-2xl shadow-lg hover:shadow-2xl transition-all p-4 border border-white/40">
         {/* Image */}
         <div className="overflow-hidden rounded-xl">
           <img
@@ -58,9 +46,23 @@ export default function BreedCard({ id, name, image, temperament }: BreedCardPro
           />
         </div>
 
-        {/* Info */}
-        <h3 className="text-lg font-semibold mt-3 text-gray-800 text-center">{name}</h3>
-        <p className="text-gray-500 text-sm text-center italic">
+        {/* Name + Heart beside each other */}
+        <div className="flex justify-center items-center gap-2 mt-3">
+          <h3 className="text-lg font-semibold text-gray-800 text-center">{name}</h3>
+          <button
+            onClick={toggleFavorite}
+            className="hover:scale-110 transition-transform"
+            aria-label="Add to favorites"
+          >
+            <Heart
+              className={`w-5 h-5 ${
+                isFavorite ? "fill-red-500 text-red-500" : "text-gray-400"
+              }`}
+            />
+          </button>
+        </div>
+
+        <p className="text-gray-500 text-sm text-center italic mt-1">
           {temperament?.split(",")[0] || "N/A"}
         </p>
       </div>
