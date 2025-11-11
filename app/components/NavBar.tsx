@@ -1,9 +1,23 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect } from "react";
+// Debug: NavBar module loaded
+console.log("[NavBar] module evaluated");
 
 export default function NavBar() {
+  console.log("[NavBar] render start");
   const pathname = usePathname();
+  console.log("[NavBar] current pathname", pathname);
+
+  useEffect(() => {
+    console.log("[NavBar] mounted");
+    return () => console.log("[NavBar] unmounted");
+  }, []);
+
+  useEffect(() => {
+    console.log("[NavBar] pathname changed", pathname);
+  }, [pathname]);
 
   return (
     <nav className="flex justify-between items-center w-full px-8 py-4 bg-white/40 backdrop-blur-md shadow-md fixed top-0 left-0 z-50">
@@ -17,6 +31,7 @@ export default function NavBar() {
           className={`hover:text-blue-600 transition ${
             pathname === "/" ? "text-blue-600" : ""
           }`}
+          onClick={() => console.log("[NavBar] Home link clicked")}
         >
           Home
         </Link>
@@ -25,6 +40,7 @@ export default function NavBar() {
           className={`hover:text-blue-600 transition ${
             pathname === "/favorites" ? "text-blue-600" : ""
           }`}
+          onClick={() => console.log("[NavBar] Favorites link clicked")}
         >
           ❤️ Favorites
         </Link>

@@ -1,73 +1,125 @@
 "use client";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useRef, useCallback, useEffect } from "react";
+// Debug: SearchBar module evaluated
+console.log("[SearchBar] module evaluated");
 import axios from "axios";
+import { Loader, AlertCircle } from "lucide-react";
 
-export default function SearchBar() {
+export interface SearchResult {
+  id: number;
+  name: string;
+  temperament?: string;
+  weight?: { imperial?: string; metric?: string };
+  height?: { imperial?: string; metric?: string };
+  lifespan?: string;
+  breedGroup?: string;
+  bredFor?: string;
+  image?: { url: string };
+  matchScore?: number;
+}
+
+interface SearchBarProps {
+    onResultsChange?: (results: SearchResult[]) => void;
+    onLoadingChange?: (loading: boolean) => void;
+}
+
+export default function SearchBar({ onResultsChange, onLoadingChange }: SearchBarProps) {
+  console.log("[SearchBar] render start");
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<any[]>([]);
-  const router = useRouter();
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (query.length < 2) {
+    console.log("[SearchBar] mounted");
+    return () => console.log("[SearchBar] unmounted");
+  }, []);
+
+  useEffect(() => {
+    console.log("[SearchBar] query changed", query);
+  }, [query]);
+
+  const performSearch = useCallback(async (searchQuery: string) => {
+    console.log("[SearchBar] performSearch", { searchQuery });
+    if (searchQuery.trim().length === 0) {
       setResults([]);
+      setError("");
+      onResultsChange?.([]);
+      console.log("[SearchBar] empty query -> cleared results");
       return;
     }
 
-    const fetchResults = async () => {
-      const res = await axios.get(
-        `https://api.thedogapi.com/v1/breeds/search?q=${query}`
-      );
-      setResults(res.data.slice(0, 5)); // show top 5
-    };
-    fetchResults();
-  }, [query]);
+    setLoading(true);
+    onLoadingChange?.(true);
+    setError("");
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (results.length > 0) router.push(`/breeds/${results[0].id}`);
+    try {
+      console.log("[SearchBar] sending request", { q: searchQuery });
+      const response = await axios.get("/api/search", {
+        params: { q: searchQuery, limit: 12 },
+      });
+      console.log("[SearchBar] response", { success: response.data.success, count: response.data.results?.length });
+
+      if (response.data.success) {
+        setResults(response.data.results);
+        onResultsChange?.(response.data.results);
+        setIsOpen(true);
+        console.log("[SearchBar] results stored", { count: response.data.results.length });
+      } else {
+        setError("No matches found!");
+        onResultsChange?.([]);
+        console.log("[SearchBar] no matches");
+      }
+    } catch (err) {
+      setError("Failed to search.");
+      setResults([]);
+      onResultsChange?.([]);
+      console.log("[SearchBar] error", err);
+    } finally {
+      setLoading(false);
+      onLoadingChange?.(false);
+      console.log("[SearchBar] done");
+    }
+  }, [onResultsChange, onLoadingChange]);
+
+  const handleSearch = () => {
+    console.log("[SearchBar] handleSearch", { query });
+    performSearch(query);
   };
-
-  const handleSelect = (id: number) => {
-    router.push(`/breeds/${id}`);
-    setQuery("");
-    setResults([]);
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      console.log("[SearchBar] Enter pressed");
+      handleSearch();
+    }
   };
 
   return (
-    <div className="relative w-[90%] sm:w-[500px]">
-      <form
-        onSubmit={handleSearch}
-        className="flex items-center bg-white/60 backdrop-blur-md border rounded-full shadow px-4 py-2"
-      >
+    <div className="relative w-[90%] sm:w-[600px]">
+      <div className="flex items-center bg-white/60 backdrop-blur-md border border-gray-300 rounded-full shadow-lg px-4 py-3 hover:shadow-xl transition-shadow gap-2">
+        <svg className="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
         <input
           type="text"
-          placeholder="Search for a breed..."
+          placeholder="E.g., 'friendly small dogs' or 'energetic large breeds'"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="flex-1 bg-transparent outline-none text-gray-700 px-2"
+          onKeyPress={handleKeyPress}
+          className="flex-1 bg-transparent outline-none text-gray-700 px-2 text-sm"
         />
+        {loading && <Loader className="w-5 h-5 text-blue-500 animate-spin mr-2 flex-shrink-0" />}
         <button
-          type="submit"
-          className="bg-gradient-to-r from-blue-600 to-indigo-500 text-white px-5 py-2 rounded-full font-medium"
+          onClick={handleSearch}
+          disabled={loading || query.trim().length === 0}
+          className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 disabled:from-gray-400 disabled:to-gray-400 text-white px-6 py-2 rounded-full font-semibold text-sm transition-all hover:scale-105 disabled:cursor-not-allowed flex-shrink-0"
         >
           Search
         </button>
-      </form>
-
-      {results.length > 0 && (
-        <ul className="absolute z-10 mt-2 bg-white/90 backdrop-blur-md rounded-xl shadow-lg w-full border border-gray-100">
-          {results.map((r) => (
-            <li
-              key={r.id}
-              onClick={() => handleSelect(r.id)}
-              className="px-4 py-2 hover:bg-blue-100 cursor-pointer text-gray-700"
-            >
-              {r.name}
-            </li>
-          ))}
-        </ul>
-      )}
+      </div>
+      <p className="text-xs text-gray-500 mt-2 text-center">💡 Try: "friendly small dogs", "energetic large"</p>
     </div>
   );
 }

@@ -1,15 +1,28 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+// Debug: CategoryFilterBar module evaluated
+console.log("[CategoryFilterBar] module evaluated");
 
 interface FilterBarProps {
   onSelect: (filter: string) => void;
 }
 
 export default function CategoryFilterBar({ onSelect }: FilterBarProps) {
+  console.log("[CategoryFilterBar] render start");
   const [selected, setSelected] = useState("All");
   const categories = ["All", "Playful", "Alert", "Friendly", "Active"];
 
+  useEffect(() => {
+    console.log("[CategoryFilterBar] mounted");
+    return () => console.log("[CategoryFilterBar] unmounted");
+  }, []);
+
+  useEffect(() => {
+    console.log("[CategoryFilterBar] selected changed", selected);
+  }, [selected]);
+
   const handleClick = (cat: string) => {
+    console.log("[CategoryFilterBar] handleClick", { cat });
     setSelected(cat);
     onSelect(cat);
   };

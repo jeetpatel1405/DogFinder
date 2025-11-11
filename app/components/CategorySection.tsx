@@ -1,6 +1,9 @@
 import BreedCard from "./BreedCard";
+// Debug: CategorySection module evaluated
+console.log("[CategorySection] module evaluated");
 
 export default function CategorySection({ title, breeds }: { title: string; breeds: any[] }) {
+  console.log("[CategorySection] render", { title, count: breeds?.length });
   return (
     <section className="my-12">
       <h2 className="text-3xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-pink-500">
