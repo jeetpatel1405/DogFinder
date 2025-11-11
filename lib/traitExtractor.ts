@@ -46,12 +46,6 @@ export function extractTraits(query: string): ExtractedTraits {
       traits.temperaments.push(trait);
     }
   });
-
-  // Extract weight constraints
-  // Examples:
-  //   Max: "under 50 pounds", "less than 30 lbs", "below 40 lb", "at most 60 pounds", "<= 45 lbs"
-  //   Min: "above 20 pounds", "more than 25 lbs", "over 30 lb", "at least 35 pounds", ">= 40 lbs"
-  // Capture the numeric value and unit, then normalize kg to lbs.
   const maxWeightMatch = lowerQuery.match(/(?:(?:under|less than|below|at most|maximum|max)|<=|<)\s*(\d+)\s*(pound|lb|lbs|kg)/);
   const minWeightMatch = lowerQuery.match(/(?:(?:above|more than|over|at least|minimum|min)|>=|>)\s*(\d+)\s*(pound|lb|lbs|kg)/);
 
