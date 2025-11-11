@@ -2,7 +2,8 @@
 export interface ExtractedTraits {
   sizes: string[];
   temperaments: string[];
-  maxWeight: number | null;
+  maxWeight: number | null; // Upper bound weight in lbs (imperial)
+  minWeight: number | null; // Lower bound weight in lbs (imperial)
   keywordMatches: string[];
 }
 
@@ -28,6 +29,7 @@ export function extractTraits(query: string): ExtractedTraits {
     sizes: [],
     temperaments: [],
     maxWeight: null,
+    minWeight: null,
     keywordMatches: [],
   };
 
@@ -45,10 +47,30 @@ export function extractTraits(query: string): ExtractedTraits {
     }
   });
 
-  // Extract weight constraint (e.g., "under 50 pounds", "less than 30 lbs")
-  const weightMatch = lowerQuery.match(/(?:under|less than|below|max|maximum|<)\s*(\d+)\s*(?:pound|lb|lbs|kg)/);
-  if (weightMatch) {
-    traits.maxWeight = parseInt(weightMatch[1], 10);
+  // Extract weight constraints
+  // Examples:
+  //   Max: "under 50 pounds", "less than 30 lbs", "below 40 lb", "at most 60 pounds", "<= 45 lbs"
+  //   Min: "above 20 pounds", "more than 25 lbs", "over 30 lb", "at least 35 pounds", ">= 40 lbs"
+  // Capture the numeric value and unit, then normalize kg to lbs.
+  const maxWeightMatch = lowerQuery.match(/(?:(?:under|less than|below|at most|maximum|max)|<=|<)\s*(\d+)\s*(pound|lb|lbs|kg)/);
+  const minWeightMatch = lowerQuery.match(/(?:(?:above|more than|over|at least|minimum|min)|>=|>)\s*(\d+)\s*(pound|lb|lbs|kg)/);
+
+  const toLbs = (value: number, unit: string) => {
+    if (unit === 'kg') {
+      return Math.round(value * 2.20462); // convert kg to lbs (rounded)
+    }
+    return value;
+  };
+
+  if (maxWeightMatch) {
+    const numeric = parseInt(maxWeightMatch[1], 10);
+    const unit = maxWeightMatch[2];
+    traits.maxWeight = toLbs(numeric, unit);
+  }
+  if (minWeightMatch) {
+    const numeric = parseInt(minWeightMatch[1], 10);
+    const unit = minWeightMatch[2];
+    traits.minWeight = toLbs(numeric, unit);
   }
 
   // Extract all words that could be breed-related traits
@@ -81,13 +103,26 @@ export function scoreBreedMatch(breed: any, traits: ExtractedTraits): number {
     }
   });
 
-  // Score weight constraint
-  if (traits.maxWeight && breed.weight?.imperial) {
+  // Score weight constraints (imperial range "min - max")
+  if ((traits.maxWeight || traits.minWeight) && breed.weight?.imperial) {
     const breedWeightStr = breed.weight.imperial;
-    const weights = breedWeightStr.split('-').map((w: string) => parseInt(w.trim(), 10));
-    const maxBreedWeight = Math.max(...weights.filter((w: number) => !isNaN(w)));
-    if (maxBreedWeight <= traits.maxWeight) {
-      score += 15;
+    const weights = breedWeightStr
+      .split('-')
+      .map((w: string) => parseInt(w.trim(), 10))
+      .filter((w: number) => !isNaN(w));
+    if (weights.length) {
+      const breedMin = Math.min(...weights);
+      const breedMax = Math.max(...weights);
+      if (traits.maxWeight && breedMax <= traits.maxWeight) {
+        score += 15; // fits upper bound
+      }
+      if (traits.minWeight && breedMin >= traits.minWeight) {
+        score += 15; // fits lower bound
+      }
+      // Bonus if both bounds specified and breed range fully inside
+      if (traits.maxWeight && traits.minWeight && breedMin >= traits.minWeight && breedMax <= traits.maxWeight) {
+        score += 5;
+      }
     }
   }
 

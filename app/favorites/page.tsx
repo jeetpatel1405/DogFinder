@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import BreedCard from "../components/BreedCard";
 import Link from "next/link";
+import NavBar from "../components/NavBar";
 
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<number[]>([]);
@@ -67,31 +68,39 @@ export default function FavoritesPage() {
   // Loading state
   if (loading) {
     return (
-      <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-pink-100">
-        <p className="text-gray-600 text-lg">Loading your favorite dogs... 🐾</p>
-      </main>
+      <>
+        <NavBar />
+        <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-pink-100">
+          <p className="text-gray-600 text-lg">Loading your favorite dogs... 🐾</p>
+        </main>
+      </>
     );
   }
 
   // Empty state
   if (favorites.length === 0) {
     return (
-      <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-pink-100">
-        <h1 className="text-3xl font-bold text-gray-800 mb-3">No Favorites Yet 💔</h1>
-        <p className="text-gray-600 mb-6">Start adding your favorite dogs to see them here!</p>
-        <Link
-          href="/"
-          className="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700 transition-all shadow-md"
-        >
-          🐶 Browse Breeds
-        </Link>
-      </main>
+      <>
+        <NavBar />
+        <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-pink-100">
+          <h1 className="text-3xl font-bold text-gray-800 mb-3">No Favorites Yet 💔</h1>
+          <p className="text-gray-600 mb-6">Start adding your favorite dogs to see them here!</p>
+          <Link
+            href="/"
+            className="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700 transition-all shadow-md"
+          >
+            🐶 Browse Breeds
+          </Link>
+        </main>
+      </>
     );
   }
 
   // Display favorites
   return (
-    <main className="min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-pink-100 p-8">
+    <>
+      <NavBar />
+      <main className="min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-pink-100 p-8 pt-24">
       <div className="text-center mb-10">
         <h1 className="text-4xl font-extrabold text-gray-800 mb-2">❤️ My Favorite Breeds</h1>
         <p className="text-gray-600">
@@ -108,6 +117,10 @@ export default function FavoritesPage() {
             name={b.name}
             image={b.image?.url}
             temperament={b.temperament}
+            weight={b.weight}
+            height={b.height}
+            lifespan={b.lifespan}
+            // matchScore={b.matchScore}  
           />
         ))}
       </div>
@@ -121,13 +134,8 @@ export default function FavoritesPage() {
           🗑️ Remove All Favorites
         </button>
 
-        <Link
-          href="/"
-          className="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold shadow-md hover:bg-blue-700 transition-all"
-        >
-          ← Back to Home
-        </Link>
       </div>
     </main>
+    </>
   );
 }

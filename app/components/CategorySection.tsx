@@ -17,6 +17,10 @@ export default function CategorySection({ title, breeds }: { title: string; bree
             name={b.name}
             image={b.image?.url || "/dog-placeholder.jpg"}
             temperament={b.temperament}
+            weight={b.weight}
+            height={b.height}
+            lifespan={b.lifespan}
+            // matchScore={b.matchScore} 
           />
         ))}
       </div>

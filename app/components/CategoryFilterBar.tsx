@@ -5,12 +5,15 @@ console.log("[CategoryFilterBar] module evaluated");
 
 interface FilterBarProps {
   onSelect: (filter: string) => void;
+  categories?: string[];
 }
 
-export default function CategoryFilterBar({ onSelect }: FilterBarProps) {
+export default function CategoryFilterBar({ onSelect, categories: categoriesProp }: FilterBarProps) {
   console.log("[CategoryFilterBar] render start");
   const [selected, setSelected] = useState("All");
-  const categories = ["All", "Playful", "Alert", "Friendly", "Active"];
+  const categories = categoriesProp && categoriesProp.length > 0
+    ? ["All", ...Array.from(new Set(categoriesProp.map(c => c.trim()).filter(Boolean)))]
+    : ["All", "Playful", "Alert", "Friendly", "Active"];
 
   useEffect(() => {
     console.log("[CategoryFilterBar] mounted");

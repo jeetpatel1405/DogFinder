@@ -19,13 +19,17 @@ export interface SearchResult {
 }
 
 interface SearchBarProps {
-    onResultsChange?: (results: SearchResult[]) => void;
+    initialQuery?: string;
+    onResultsChange?: (results: SearchResult[], query?: string, traits?: any) => void;
     onLoadingChange?: (loading: boolean) => void;
+    // When provided, overrides the input value. If autoSearch is true, triggers a search immediately.
+    forcedQuery?: string;
+    autoSearch?: boolean;
 }
 
-export default function SearchBar({ onResultsChange, onLoadingChange }: SearchBarProps) {
-  console.log("[SearchBar] render start");
-  const [query, setQuery] = useState("");
+export default function SearchBar({ initialQuery, onResultsChange, onLoadingChange, forcedQuery, autoSearch }: SearchBarProps) {
+  console.log("[SearchBar] render start", { initialQuery, forcedQuery, autoSearch });
+  const [query, setQuery] = useState(initialQuery || "");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -37,6 +41,25 @@ export default function SearchBar({ onResultsChange, onLoadingChange }: SearchBa
     return () => console.log("[SearchBar] unmounted");
   }, []);
 
+  // Trigger search when initialQuery is provided
+  useEffect(() => {
+    if (initialQuery && initialQuery.trim().length > 0) {
+      console.log("[SearchBar] auto-triggering search from initialQuery", initialQuery);
+      performSearch(initialQuery);
+    }
+  }, [initialQuery]);
+
+  // Respond to forcedQuery from parent: update input and optionally auto-search
+  useEffect(() => {
+    if (typeof forcedQuery === 'string') {
+      console.log("[SearchBar] syncing forcedQuery", { forcedQuery, autoSearch });
+      setQuery(forcedQuery);
+      if (autoSearch && forcedQuery.trim().length > 0) {
+        performSearch(forcedQuery);
+      }
+    }
+  }, [forcedQuery, autoSearch]);
+
   useEffect(() => {
     console.log("[SearchBar] query changed", query);
   }, [query]);
@@ -46,7 +69,7 @@ export default function SearchBar({ onResultsChange, onLoadingChange }: SearchBa
     if (searchQuery.trim().length === 0) {
       setResults([]);
       setError("");
-      onResultsChange?.([]);
+      onResultsChange?.([], "");
       console.log("[SearchBar] empty query -> cleared results");
       return;
     }
@@ -63,19 +86,23 @@ export default function SearchBar({ onResultsChange, onLoadingChange }: SearchBa
       console.log("[SearchBar] response", { success: response.data.success, count: response.data.results?.length });
 
       if (response.data.success) {
+        const traits = response.data.extractedTraits;
+        try {
+          localStorage.setItem("lastTraits", JSON.stringify(traits));
+        } catch {}
         setResults(response.data.results);
-        onResultsChange?.(response.data.results);
+        onResultsChange?.(response.data.results, searchQuery, traits);
         setIsOpen(true);
         console.log("[SearchBar] results stored", { count: response.data.results.length });
       } else {
         setError("No matches found!");
-        onResultsChange?.([]);
+        onResultsChange?.([], searchQuery);
         console.log("[SearchBar] no matches");
       }
     } catch (err) {
       setError("Failed to search.");
       setResults([]);
-      onResultsChange?.([]);
+      onResultsChange?.([], searchQuery);
       console.log("[SearchBar] error", err);
     } finally {
       setLoading(false);
