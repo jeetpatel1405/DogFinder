@@ -130,7 +130,7 @@
 // 							<div className="absolute top-2 right-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
 // 								{breed.matchScore}% ⭐
 // 							</div>
-// 						)}
+							// <div className="absolute top-2 right-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
 // 					</div>
 // 				))}
 // 			</div>

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 // Debug: Home page module evaluated
 console.log("[Home] module evaluated");
@@ -11,7 +11,7 @@ import axios from "axios";
 import Link from "next/link";
 import NavBar from "./components/NavBar";
 
-function HomeContent() {
+export default function Home() {
   console.log("[Home] render start");
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -125,7 +125,7 @@ function HomeContent() {
   console.log("[Home] filteredBreeds computed", { filter, count: filteredBreeds.length });
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-purple-200 via-blue-100 to-pink-100">
+    <main className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-amber-50">
       {/* Navbar */}
       <NavBar />
 
@@ -160,13 +160,13 @@ function HomeContent() {
           </div>
         )} */}
 
-        {searchResults.length === 0 && !isSearching && (
+        {!isSearching && (
           <CategoryFilterBar
             categories={[
               ...(lastTraits?.temperaments?.map((t) => t.charAt(0).toUpperCase() + t.slice(1)) || []),
               ...(lastTraits?.sizes?.map((s) => s.charAt(0).toUpperCase() + s.slice(1)) || []),
               ...(lastTraits?.maxWeight ? [
-                `Max ${lastTraits.maxWeight} lbs`
+                `Max ${lastTraits?.maxWeight} lbs`
               ] : []),
               ...(lastTraits?.minWeight ? [
                 `Min ${lastTraits.minWeight} lbs`
@@ -176,6 +176,9 @@ function HomeContent() {
               console.log('[Home] CategoryFilterBar onSelect', cat);
               setFilter(cat);
               if (cat === 'All') {
+                // Clear search results when "All" is clicked
+                setSearchResults([]);
+                setForcedQuery('');
                 return;
               }
               // Build new traits from lastTraits plus the selected category standardized
@@ -251,20 +254,5 @@ function HomeContent() {
         </div>
       )}
     </main>
-  );
-}
-
-export default function Home() {
-  return (
-    <Suspense fallback={
-      <main className="min-h-screen bg-gradient-to-br from-purple-200 via-blue-100 to-pink-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
-        </div>
-      </main>
-    }>
-      <HomeContent />
-    </Suspense>
   );
 }

@@ -75,7 +75,7 @@ export default function BreedCard({
         {/* Match Score Badge */}
         {/* {matchScore && (
           <div className="mb-2">
-            <span className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1 rounded-full text-xs font-bold inline-block">
+            <span className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold inline-block">
               {matchScore}% match
             </span>
           </div>
@@ -121,10 +121,11 @@ export default function BreedCard({
           )}
         </div>
 
-        {/* View Details Button */}
-        <button className="mt-4 w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-2 rounded-lg font-semibold text-sm hover:from-blue-600 hover:to-purple-600 transition-all">
-          View Details →
-        </button>
+      <button className="mt-4 w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white py-2 rounded-lg font-semibold text-sm hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 shadow-md hover:shadow-lg">
+        View Details →
+      </button>
+
+
       </div>
     </Link>
   );

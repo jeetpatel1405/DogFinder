@@ -141,7 +141,7 @@ export default function SearchBar({ initialQuery, onResultsChange, onLoadingChan
         <button
           onClick={handleSearch}
           disabled={loading || query.trim().length === 0}
-          className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 disabled:from-gray-400 disabled:to-gray-400 text-white px-6 py-2 rounded-full font-semibold text-sm transition-all hover:scale-105 disabled:cursor-not-allowed flex-shrink-0"
+          className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 disabled:from-gray-400 disabled:to-gray-400 text-white px-6 py-2 rounded-full font-semibold text-sm transition-all hover:scale-105 disabled:cursor-not-allowed flex-shrink-0"
         >
           Search
         </button>

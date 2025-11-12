@@ -19,7 +19,7 @@ export default async function BreedDetail({ params }: { params: Promise<{ id: st
     }
 
     return (
-      <main className="min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-pink-100 flex flex-col items-center p-10">
+  <main className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-amber-50 flex flex-col items-center p-10">
         <div className="max-w-xl w-full bg-white/60 backdrop-blur-md p-8 rounded-3xl shadow-xl border border-white/40">
           <Link
             href="/"

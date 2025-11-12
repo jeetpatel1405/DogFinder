@@ -70,7 +70,7 @@ export default function FavoritesPage() {
     return (
       <>
         <NavBar />
-        <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-pink-100">
+  <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-sky-50 via-white to-amber-50">
           <p className="text-gray-600 text-lg">Loading your favorite dogs... 🐾</p>
         </main>
       </>
@@ -82,7 +82,7 @@ export default function FavoritesPage() {
     return (
       <>
         <NavBar />
-        <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-pink-100">
+  <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-sky-50 via-white to-amber-50">
           <h1 className="text-3xl font-bold text-gray-800 mb-3">No Favorites Yet 💔</h1>
           <p className="text-gray-600 mb-6">Start adding your favorite dogs to see them here!</p>
           <Link
@@ -100,7 +100,7 @@ export default function FavoritesPage() {
   return (
     <>
       <NavBar />
-      <main className="min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-pink-100 p-8 pt-24">
+  <main className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-amber-50 p-8 pt-24">
       <div className="text-center mb-10">
         <h1 className="text-4xl font-extrabold text-gray-800 mb-2">❤️ My Favorite Breeds</h1>
         <p className="text-gray-600">

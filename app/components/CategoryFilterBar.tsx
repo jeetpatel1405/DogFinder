@@ -24,25 +24,25 @@ export default function CategoryFilterBar({ onSelect, categories: categoriesProp
     console.log("[CategoryFilterBar] selected changed", selected);
   }, [selected]);
 
-  const handleClick = (cat: string) => {
-    console.log("[CategoryFilterBar] handleClick", { cat });
-    setSelected(cat);
-    onSelect(cat);
+  const handleClick = (dog: string) => {
+    console.log("[CategoryFilterBar] handleClick", { dog });
+    setSelected(dog);
+    onSelect(dog);
   };
 
   return (
     <div className="flex justify-center mt-6 mb-12 space-x-3 flex-wrap">
-      {categories.map((cat) => (
+      {categories.map((dog) => (
         <button
-          key={cat}
-          onClick={() => handleClick(cat)}
+          key={dog}
+          onClick={() => handleClick(dog)}
           className={`px-5 py-2 rounded-full font-medium transition-all ${
-            selected === cat
-              ? "bg-gradient-to-r from-blue-600 to-indigo-500 text-white shadow-md"
+            selected === dog
+              ? "bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-md"
               : "bg-white/70 text-gray-700 hover:bg-white/90"
           }`}
         >
-          {cat}
+          {dog}
         </button>
       ))}
     </div>
