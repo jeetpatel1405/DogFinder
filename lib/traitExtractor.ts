@@ -81,6 +81,13 @@ export function extractTraits(query: string): ExtractedTraits {
     traits.maxLifespan = parseInt(lifespanMatch[2], 10);
   }
 
+  // Extract height bounds - format: "height 10-15 inches"
+  const heightMatch = lowerQuery.match(/height\s+(\d+)\s*-\s*(\d+)\s*(?:inches?|in)?/i);
+  if (heightMatch) {
+    traits.minHeight = parseInt(heightMatch[1], 10);
+    traits.maxHeight = parseInt(heightMatch[2], 10);
+  }
+
   // Extract weight bounds - handle multiple occurrences and take most restrictive
   // Find ALL "at least X lbs" and "at most Y lbs" patterns
   const atLeastRegex = /at least\s+(\d+)\s*(?:lbs?|pounds?)/gi;

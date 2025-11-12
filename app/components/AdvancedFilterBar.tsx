@@ -72,21 +72,18 @@ const AdvancedFilterBar: React.FC<AdvancedFilterBarProps> = ({ onApply }) => {
       }
     }
     
-    // Add height filter - but only if weight is NOT selected (to avoid conflicts)
-    // When weight is selected, it takes precedence
-    if (selectedHeight && !selectedWeight) {
-      // Parse height range and convert to weight bounds if needed
-      // "< 10 in" -> under 20 lbs, "10-15 in" -> 20-40 lbs, etc.
+    // Add height filter with actual height ranges in inches
+    if (selectedHeight) {
       if (selectedHeight === "< 10 in") {
-        parts.push("at most 20 lbs");
+        parts.push("height 0-10 inches");
       } else if (selectedHeight === "10-15 in") {
-        parts.push("at least 20 lbs at most 40 lbs");
+        parts.push("height 10-15 inches");
       } else if (selectedHeight === "15-20 in") {
-        parts.push("at least 40 lbs at most 60 lbs");
+        parts.push("height 15-20 inches");
       } else if (selectedHeight === "20-25 in") {
-        parts.push("at least 60 lbs at most 80 lbs");
+        parts.push("height 20-25 inches");
       } else if (selectedHeight === "> 25 in") {
-        parts.push("at least 80 lbs");
+        parts.push("height 25-40 inches");
       }
     }
     
