@@ -89,7 +89,6 @@ export function extractTraits(query: string): ExtractedTraits {
   }
 
   // Extract weight bounds - handle multiple occurrences and take most restrictive
-  // Find ALL "at least X lbs" and "at most Y lbs" patterns
   const atLeastRegex = /at least\s+(\d+)\s*(?:lbs?|pounds?)/gi;
   const atMostRegex = /at most\s+(\d+)\s*(?:lbs?|pounds?)/gi;
   
@@ -191,13 +190,16 @@ export function scoreBreedMatch(breed: any, traits: ExtractedTraits): number {
     if (lifespans.length) {
       const breedMinLife = Math.min(...lifespans);
       const breedMaxLife = Math.max(...lifespans);
+      
       if (traits.maxLifespan !== null && breedMaxLife <= traits.maxLifespan) {
-        score += 10;
+        score += 10; // fits upper bound
       }
       if (traits.minLifespan !== null && breedMinLife >= traits.minLifespan) {
-        score += 10;
+        score += 10; // fits lower bound
       }
-      if (traits.maxLifespan !== null && traits.minLifespan !== null && breedMinLife >= traits.minLifespan && breedMaxLife <= traits.maxLifespan) {
+      // Bonus if both bounds specified and breed range fully inside
+      if (traits.maxLifespan !== null && traits.minLifespan !== null && 
+          breedMinLife >= traits.minLifespan && breedMaxLife <= traits.maxLifespan) {
         score += 5;
       }
     }
@@ -273,7 +275,7 @@ function meetsStrictFilters(breed: any, traits: ExtractedTraits): boolean {
     const breedMinLife = Math.min(...lifespans);
     const breedMaxLife = Math.max(...lifespans);
     
-    // Both min and max must be within bounds
+    // Both min and max must be within bounds (breed range must fit inside filter range)
     if (traits.minLifespan !== null && breedMinLife < traits.minLifespan) return false;
     if (traits.maxLifespan !== null && breedMaxLife > traits.maxLifespan) return false;
   }

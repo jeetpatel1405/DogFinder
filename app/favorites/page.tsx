@@ -82,9 +82,7 @@ export default function FavoritesPage() {
     return (
       <>
         <NavBar />
-        <div className="pt-20" />
-      
-        <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-sky-50 via-white to-amber-50">
+        <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-sky-50 via-white to-amber-50 pt-20">
           <h1 className="text-3xl font-bold text-gray-800 mb-3">No Favorites Yet 💔</h1>
           <p className="text-gray-600 mb-6">Start adding your favorite dogs to see them here!</p>
           <Link

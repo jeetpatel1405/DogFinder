@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { extractTraits, rankBreeds } from '@/lib/traitExtractor';
-import { breedsCache, CACHE_KEYS } from '@/lib/cache';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -15,19 +14,6 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Check cache first
-    const cacheKey = CACHE_KEYS.SEARCH(query);
-    const cachedResults = breedsCache.get<any[]>(cacheKey);
-    if (cachedResults) {
-      return NextResponse.json({
-        success: true,
-        cached: true,
-        query,
-        results: cachedResults.slice(0, limit),
-        total: cachedResults.length,
-      });
-    }
-
     // Extract traits from natural language query
     const traits = extractTraits(query);
     console.log('=== SEARCH DEBUG ===');
@@ -35,29 +21,22 @@ export async function GET(request: NextRequest) {
     console.log('Extracted traits:', JSON.stringify(traits, null, 2));
 
     // Fetch all breeds from TheDogAPI
-    let allBreeds = breedsCache.get<any[]>('all_breeds');
-    if (!allBreeds) {
-      const response = await fetch('https://api.thedogapi.com/v1/breeds', {
-        headers: {
-          'x-api-key': process.env.NEXT_PUBLIC_DOG_API_KEY || '',
-        },
-      });
+    const response = await fetch('https://api.thedogapi.com/v1/breeds', {
+      headers: {
+        'x-api-key': process.env.NEXT_PUBLIC_DOG_API_KEY || '',
+      },
+    });
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch breeds from TheDogAPI');
-      }
-
-      allBreeds = await response.json();
-      breedsCache.set(CACHE_KEYS.ALL_BREEDS, allBreeds);
+    if (!response.ok) {
+      throw new Error('Failed to fetch breeds from TheDogAPI');
     }
+
+    const allBreeds = await response.json();
 
     // Rank and filter breeds based on extracted traits
     const rankedBreeds = rankBreeds(allBreeds || [], traits);
     console.log('Breeds after strict filtering:', rankedBreeds.length);
     console.log('===================');
-
-    // Cache the results
-    breedsCache.set(cacheKey, rankedBreeds);
 
     return NextResponse.json({
       success: true,
