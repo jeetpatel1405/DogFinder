@@ -30,6 +30,9 @@ export async function GET(request: NextRequest) {
 
     // Extract traits from natural language query
     const traits = extractTraits(query);
+    console.log('=== SEARCH DEBUG ===');
+    console.log('Query:', query);
+    console.log('Extracted traits:', JSON.stringify(traits, null, 2));
 
     // Fetch all breeds from TheDogAPI
     let allBreeds = breedsCache.get<any[]>('all_breeds');
@@ -50,6 +53,8 @@ export async function GET(request: NextRequest) {
 
     // Rank and filter breeds based on extracted traits
     const rankedBreeds = rankBreeds(allBreeds || [], traits);
+    console.log('Breeds after strict filtering:', rankedBreeds.length);
+    console.log('===================');
 
     // Cache the results
     breedsCache.set(cacheKey, rankedBreeds);

@@ -19,7 +19,7 @@ export default function CategorySection({ title, breeds }: { title: string; bree
             temperament={b.temperament}
             weight={b.weight}
             height={b.height}
-            lifespan={b.lifespan}
+            lifespan={b.life_span || b.lifespan}
             // matchScore={b.matchScore} 
           />
         ))}

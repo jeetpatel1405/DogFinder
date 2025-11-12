@@ -72,15 +72,6 @@ export default function BreedCard({
           />
         </div>
 
-        {/* Match Score Badge */}
-        {/* {matchScore && (
-          <div className="mb-2">
-            <span className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold inline-block">
-              {matchScore}% match
-            </span>
-          </div>
-        )} */}
-
         {/* Name + Heart */}
         <div className="flex justify-between items-start gap-2 mb-3">
           <h3 className="text-lg font-bold text-gray-800 flex-1">{name}</h3>

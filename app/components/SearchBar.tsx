@@ -54,7 +54,8 @@ export default function SearchBar({ initialQuery, onResultsChange, onLoadingChan
     if (typeof forcedQuery === 'string') {
       console.log("[SearchBar] syncing forcedQuery", { forcedQuery, autoSearch });
       setQuery(forcedQuery);
-      if (autoSearch && forcedQuery.trim().length > 0) {
+      if (autoSearch) {
+        // Always perform search when autoSearch is true, even for empty queries
         performSearch(forcedQuery);
       }
     }

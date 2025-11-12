@@ -5,6 +5,7 @@ import axios from "axios";
 import BreedCard from "../components/BreedCard";
 import Link from "next/link";
 import NavBar from "../components/NavBar";
+import { AdvancedFilterBar } from "../components/AdvancedFilterBar";
 
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<number[]>([]);
@@ -70,7 +71,11 @@ export default function FavoritesPage() {
     return (
       <>
         <NavBar />
-  <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-sky-50 via-white to-amber-50">
+        <div className="pt-20" />
+        <div className="fixed top-0 left-0 w-full z-30">
+          <AdvancedFilterBar onApply={() => {}} />
+        </div>
+        <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-sky-50 via-white to-amber-50">
           <p className="text-gray-600 text-lg">Loading your favorite dogs... 🐾</p>
         </main>
       </>
@@ -82,7 +87,11 @@ export default function FavoritesPage() {
     return (
       <>
         <NavBar />
-  <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-sky-50 via-white to-amber-50">
+        <div className="pt-20" />
+        <div className="fixed top-0 left-0 w-full z-30">
+          <AdvancedFilterBar onApply={() => {}} />
+        </div>
+        <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-sky-50 via-white to-amber-50">
           <h1 className="text-3xl font-bold text-gray-800 mb-3">No Favorites Yet 💔</h1>
           <p className="text-gray-600 mb-6">Start adding your favorite dogs to see them here!</p>
           <Link
@@ -100,42 +109,45 @@ export default function FavoritesPage() {
   return (
     <>
       <NavBar />
-  <main className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-amber-50 p-8 pt-24">
-      <div className="text-center mb-10">
-        <h1 className="text-4xl font-extrabold text-gray-800 mb-2">❤️ My Favorite Breeds</h1>
-        <p className="text-gray-600">
-          A list of all the adorable dogs you've added to your favorites.
-        </p>
+      <div className="pt-20" />
+      <div className="fixed top-0 left-0 w-full z-30">
+        <AdvancedFilterBar onApply={() => {}} />
       </div>
+      <main className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-amber-50 p-8 pt-24">
+        <div className="text-center mb-10">
+          <div className="flex justify-between items-center max-w-7xl mx-auto mb-2">
+            <div className="flex-1"></div>
+            <h1 className="text-4xl font-extrabold text-gray-800 flex-1">❤️ My Favorite Breeds</h1>
+            <div className="flex-1 flex justify-end">
+              <button
+                onClick={clearFavorites}
+                className="bg-red-500 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-red-600 transition-all text-sm"
+              >
+                🗑️ Remove All
+              </button>
+            </div>
+          </div>
+          <p className="text-gray-600">
+            A list of all the adorable dogs you've added to your favorites.
+          </p>
+        </div>
 
-      {/* Favorites grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 max-w-7xl mx-auto">
-        {breeds.map((b) => (
-          <BreedCard
-            key={b.id}
-            id={b.id}
-            name={b.name}
-            image={b.image?.url}
-            temperament={b.temperament}
-            weight={b.weight}
-            height={b.height}
-            lifespan={b.lifespan}
-            // matchScore={b.matchScore}  
-          />
-        ))}
-      </div>
-
-      {/* Clear & Back buttons */}
-      <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-12">
-        <button
-          onClick={clearFavorites}
-          className="bg-red-500 text-white px-6 py-3 rounded-full font-semibold shadow-md hover:bg-red-600 transition-all"
-        >
-          🗑️ Remove All Favorites
-        </button>
-
-      </div>
-    </main>
+        {/* Favorites grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 max-w-7xl mx-auto">
+          {breeds.map((b) => (
+            <BreedCard
+              key={b.id}
+              id={b.id}
+              name={b.name}
+              image={b.image?.url}
+              temperament={b.temperament}
+              weight={b.weight}
+              height={b.height}
+              lifespan={b.lifespan}
+            />
+          ))}
+        </div>
+      </main>
     </>
   );
 }
