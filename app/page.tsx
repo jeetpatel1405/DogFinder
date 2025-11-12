@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 // Debug: Home page module evaluated
 console.log("[Home] module evaluated");
@@ -11,7 +11,7 @@ import axios from "axios";
 import Link from "next/link";
 import NavBar from "./components/NavBar";
 
-export default function Home() {
+function HomeContent() {
   console.log("[Home] render start");
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -125,7 +125,7 @@ export default function Home() {
   console.log("[Home] filteredBreeds computed", { filter, count: filteredBreeds.length });
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-amber-50">
+    <main className="min-h-screen bg-gradient-to-br from-cyan-50 via-white to-blue-50">
       {/* Navbar */}
       <NavBar />
 
@@ -149,16 +149,7 @@ export default function Home() {
           />
         </div>
 
-        {/* {hasFavorites && !isSearching && searchResults.length === 0 && (
-          <div className="flex justify-center mt-6">
-            <Link
-              href="/favorites"
-              className="bg-gradient-to-r from-pink-500 to-red-500 text-white px-6 py-3 rounded-full font-semibold shadow-md hover:shadow-lg transition-all hover:scale-105"
-            >
-              ❤️ View My Favorites
-            </Link>
-          </div>
-        )} */}
+  
 
         {!isSearching && (
           <CategoryFilterBar
@@ -254,5 +245,20 @@ export default function Home() {
         </div>
       )}
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen bg-gradient-to-br from-cyan-50 via-white to-blue-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </main>
+    }>
+      <HomeContent />
+    </Suspense>
   );
 }
