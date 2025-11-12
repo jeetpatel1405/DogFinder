@@ -345,3 +345,4 @@ export function rankBreeds(breeds: any[], traits: ExtractedTraits): any[] {
 
   return scored;
 }
+ 

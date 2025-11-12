@@ -5,7 +5,6 @@ import axios from "axios";
 import BreedCard from "../components/BreedCard";
 import Link from "next/link";
 import NavBar from "../components/NavBar";
-import { AdvancedFilterBar } from "../components/AdvancedFilterBar";
 
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<number[]>([]);
@@ -71,11 +70,7 @@ export default function FavoritesPage() {
     return (
       <>
         <NavBar />
-        <div className="pt-20" />
-        <div className="fixed top-0 left-0 w-full z-30">
-          <AdvancedFilterBar onApply={() => {}} />
-        </div>
-        <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-sky-50 via-white to-amber-50">
+        <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-sky-50 via-white to-amber-50 pt-20">
           <p className="text-gray-600 text-lg">Loading your favorite dogs... 🐾</p>
         </main>
       </>
@@ -88,9 +83,7 @@ export default function FavoritesPage() {
       <>
         <NavBar />
         <div className="pt-20" />
-        <div className="fixed top-0 left-0 w-full z-30">
-          <AdvancedFilterBar onApply={() => {}} />
-        </div>
+      
         <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-sky-50 via-white to-amber-50">
           <h1 className="text-3xl font-bold text-gray-800 mb-3">No Favorites Yet 💔</h1>
           <p className="text-gray-600 mb-6">Start adding your favorite dogs to see them here!</p>
@@ -109,10 +102,6 @@ export default function FavoritesPage() {
   return (
     <>
       <NavBar />
-      <div className="pt-20" />
-      <div className="fixed top-0 left-0 w-full z-30">
-        <AdvancedFilterBar onApply={() => {}} />
-      </div>
       <main className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-amber-50 p-8 pt-24">
         <div className="text-center mb-10">
           <div className="flex justify-between items-center max-w-7xl mx-auto mb-2">
